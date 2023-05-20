@@ -1,18 +1,19 @@
 import React, { ChangeEvent } from "react";
 import { FormGroup, Form, Col, Row } from "react-bootstrap";
-interface SearchInputProps {
+interface PriceFilterInputProps {
   onMaxChange: Function,
   onMinChange: Function,
   min: number,
   max: number
 }
 
-const SearchInput: React.FC<SearchInputProps> = ({ onMaxChange, onMinChange, max= 1000, min = 0 }) =>
+const PriceFilterInput: React.FC<PriceFilterInputProps> = ({ onMaxChange, onMinChange, max= 1000, min = 0 }) =>
   <FormGroup className="mb-3">
     <Row>
       <Col xs={12} md={6}>
-        <Form.Label htmlFor="search">Min Price</Form.Label>
+        <Form.Label htmlFor="min">Min Price</Form.Label>
         <Form.Control
+          id="min"
             type="number"
             step={1}
             min={0}
@@ -22,8 +23,9 @@ const SearchInput: React.FC<SearchInputProps> = ({ onMaxChange, onMinChange, max
         />
       </Col>
       <Col xs={12} md={6}>
-        <Form.Label htmlFor="search">Max Price</Form.Label>
+        <Form.Label htmlFor="max">Max Price</Form.Label>
           <Form.Control
+            id="max"
               type="number"
               step={1}
               min={0}
@@ -36,4 +38,4 @@ const SearchInput: React.FC<SearchInputProps> = ({ onMaxChange, onMinChange, max
   </FormGroup>
 ;
 
-export default SearchInput;
+export default PriceFilterInput;
