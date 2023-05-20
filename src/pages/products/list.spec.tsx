@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import ProductList from "./list";
+import { BrowserRouter } from 'react-router-dom';
 
 // Mock API response
 const mockProducts = [
@@ -59,7 +60,11 @@ describe("ProductList", () => {
     );
 
     // When
-    render(<ProductList />);
+    render(
+        <BrowserRouter>
+            <ProductList />
+        </BrowserRouter>
+    );
 
     // Then
     expect(screen.getByText("Loading...")).toBeInTheDocument();
@@ -75,7 +80,11 @@ describe("ProductList", () => {
     );
 
     // When
-    render(<ProductList />);
+    render(
+        <BrowserRouter>
+            <ProductList />
+        </BrowserRouter>
+    );
 
     // Then
     expect(await screen.findByText(`Error: ${errorMessage}`)).toBeInTheDocument();
@@ -90,7 +99,11 @@ describe("ProductList", () => {
     );
 
     // When
-    render(<ProductList />);
+    render(
+        <BrowserRouter>
+            <ProductList />
+        </BrowserRouter>
+    );
 
     // Then
     expect(await screen.findByText("Products")).toBeInTheDocument();

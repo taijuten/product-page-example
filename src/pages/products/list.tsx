@@ -1,10 +1,17 @@
 import React from "react";
-import useProductCollection from "../../hooks/useProductsApi";
+import { useLocation } from "react-router-dom";
+import useProductsApi from "../../hooks/useProductsApi";
 import ProductItem from "../../components/organisms/productCard";
-import { Col, Row } from "react-bootstrap";
+import { Col, Row, Container } from "react-bootstrap";
+import qs from "query-string";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../App.css';
+import ProductFilters from "../../components/organisms/productFilters";
 
 const ProductList: React.FC = () => {
-  const { products, error, loading } = useProductCollection();
+  const location = useLocation();
+  const queryParams = qs.parse(location.search);
+  const { products, error, loading } = useProductsApi(queryParams.search as string);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -15,17 +22,24 @@ const ProductList: React.FC = () => {
   }
 
   return (
-    <>
+    <Container className='App py-3'>
       <h1>Products</h1>
       <h6>Showing {products.length} products</h6>
       <Row>
-        {products.map((product) => (
-          <Col xs={12} md={6} lg={4} key={`product_${product.id}`}>
-            <ProductItem product={product} />
-          </Col>
-        ))}
+        <Col xs={12} md={4} lg={3}>
+          <ProductFilters />
+        </Col>
+        <Col xs={12} md={8} lg={9}>
+          <Row>
+            {products.map((product) => (
+              <Col sm={12} lg={6} xl={4} key={`product_${product.id}`}>
+                <ProductItem product={product} />
+              </Col>
+            ))}
+          </Row>
+        </Col>
       </Row>
-    </>
+    </Container>
   );
 };
 

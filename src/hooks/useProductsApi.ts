@@ -9,7 +9,7 @@ interface ProductState {
   loading: boolean;
 }
 
-function useProductCollection(): ProductState {
+function useProductCollection(searchTerm?: string): ProductState {
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
@@ -17,7 +17,12 @@ function useProductCollection(): ProductState {
   useEffect(() => {
     const fetchProducts = async (): Promise<void> => {
       try {
-        const response = await fetch(`${API_HOST}/products`);
+        let url = `${API_HOST}/products`;
+        if (searchTerm) {
+          url += `?title_like=${searchTerm}`;
+        }
+
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Failed to fetch products");
         }
@@ -31,7 +36,7 @@ function useProductCollection(): ProductState {
     };
 
     fetchProducts();
-  }, []);
+  }, [searchTerm]);
 
   return { products, error, loading };
 }
