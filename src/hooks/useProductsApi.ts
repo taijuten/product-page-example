@@ -12,7 +12,13 @@ interface ProductState {
   loadMore: Function;
 }
 
-function useProductsApi(searchTerm?: string, page = 1, limit = 9): ProductState {
+function useProductsApi(
+  searchTerm?: string,
+  min?: number,
+  max?: number,
+  page = 1,
+  limit = 9
+): ProductState {
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
@@ -23,7 +29,7 @@ function useProductsApi(searchTerm?: string, page = 1, limit = 9): ProductState 
     setProducts([]);
     setNextPage(1);
     setHasMore(true);
-  }, [searchTerm]);
+  }, [searchTerm, min, max]);
 
   useEffect(() => {
     const fetchProducts = async (): Promise<void> => {
@@ -31,6 +37,12 @@ function useProductsApi(searchTerm?: string, page = 1, limit = 9): ProductState 
         let url = `${API_HOST}/products?_page=${nextPage}&_limit=${limit}`;
         if (searchTerm) {
           url += `&title_like=${searchTerm}`;
+        }
+        if (min !== undefined) {
+          url += `&price_gte=${min}`;
+        }
+        if (max !== undefined) {
+          url += `&price_lte=${max}`;
         }
 
         const response = await fetch(url);
@@ -59,7 +71,7 @@ function useProductsApi(searchTerm?: string, page = 1, limit = 9): ProductState 
     };
 
     fetchProducts();
-  }, [searchTerm, nextPage, limit]);
+  }, [searchTerm, nextPage, limit, min, max]);
 
   const loadMore = () => {
     setNextPage((prevPage) => prevPage + 1);

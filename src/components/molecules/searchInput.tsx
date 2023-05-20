@@ -6,7 +6,7 @@ interface SearchInputProps {
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({ onChange, searchQuery }) =>
-    <FormGroup>
+    <FormGroup className="mb-3">
     <Form.Label htmlFor="search">Search</Form.Label>
     <Form.Control
         id="search"

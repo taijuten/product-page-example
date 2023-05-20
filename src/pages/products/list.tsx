@@ -11,7 +11,11 @@ import ProductFilters from "../../components/organisms/productFilters";
 const ProductList: React.FC = () => {
   const location = useLocation();
   const queryParams = qs.parse(location.search);
-  const { products, error, loading, hasMore, loadMore } = useProductsApi(queryParams.search as string);
+  const { products, error, loading, hasMore, loadMore } = useProductsApi(
+    queryParams.search as string,
+    parseInt(queryParams.min as string),
+    parseInt(queryParams.max as string)
+  );
 
   if (loading) {
     return <div>Loading...</div>;
