@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import useProductsApi from "../../hooks/useProductsApi";
 import ProductItem from "../../components/organisms/productCard";
-import { Button, Col, Row, Container } from "react-bootstrap";
+import { Col, Row, Container } from "react-bootstrap";
 import qs from "query-string";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../App.css';
@@ -11,7 +11,7 @@ import ProductFilters from "../../components/organisms/productFilters";
 const ProductList: React.FC = () => {
   const location = useLocation();
   const queryParams = qs.parse(location.search);
-  const { products, error, loading, hasMore, loadMore } = useProductsApi(queryParams.search as string);
+  const { products, error, loading } = useProductsApi(queryParams.search as string);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -37,11 +37,6 @@ const ProductList: React.FC = () => {
               </Col>
             ))}
           </Row>
-          {hasMore && (
-            <div className="text-center mt-4">
-              <Button onClick={() => loadMore()}>Load More</Button>
-            </div>
-          )}
         </Col>
       </Row>
     </Container>

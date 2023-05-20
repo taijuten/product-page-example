@@ -14,7 +14,7 @@ const ProductFilters: React.FC = () => {
         const updatedQueryParams = { ...queryParams, search: searchQuery };
         const query = qs.stringify(updatedQueryParams);
         navigate(`?${query}`);
-    }, [searchQuery]);
+    }, [searchQuery, navigate, queryParams]);
 
     return (
         <Card>

@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import ProductList from "./list";
@@ -107,6 +107,6 @@ describe("ProductList", () => {
 
     // Then
     expect(await screen.findByText("Products")).toBeInTheDocument();
-    await screen.findByText(`Showing ${mockProducts.length} products`);
+    expect(screen.getByText(`Showing ${mockProducts.length} products`)).toBeInTheDocument();
   });
 });
