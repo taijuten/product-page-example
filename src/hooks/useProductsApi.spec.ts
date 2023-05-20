@@ -69,4 +69,29 @@ describe("useProductCollection", () => {
     expect(result.current.products).toEqual([]);
     expect(result.current.error).toBe(errorMessage);
   });
+
+  test("fetches and returns products based on search term", async () => {
+    // Given
+    server.use(
+      rest.get(`${process.env.REACT_APP_API_HOST}/products`, (req, res, ctx) => {
+        const searchTerm = req.url.searchParams.get("title_like");
+        if (searchTerm === "test") {
+          return res(ctx.json([{ id: 3, name: "Product 3" }]));
+        } else {
+          return res(ctx.json(mockProducts));
+        }
+      })
+    );
+
+    // When
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useProductCollection("test")
+    );
+    await waitForNextUpdate();
+
+    // Then
+    expect(result.current.loading).toBe(false);
+    expect(result.current.products).toEqual([{ id: 3, name: "Product 3" }]);
+    expect(result.current.error).toBe("");
+  });
 });
