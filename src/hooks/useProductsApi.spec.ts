@@ -71,7 +71,7 @@ describe("useProductsApi", () => {
     );
 
     // When
-    const { result, waitForNextUpdate } = renderHook(() => useProductsApi(undefined, 1, mockProducts.length));
+    const { result, waitForNextUpdate } = renderHook(() => useProductsApi(undefined, undefined, undefined, 1, mockProducts.length));
     await waitForNextUpdate();
 
     // Then
@@ -109,7 +109,7 @@ describe("useProductsApi", () => {
       rest.get(`${process.env.REACT_APP_API_HOST}/products`, (req, res, ctx) => {
         const searchTerm = req.url.searchParams.get("title_like");
         if (searchTerm === "test") {
-          return res(ctx.json([{ id: 3, name: "Product 3" }]));
+          return res(ctx.json([mockProducts[0]]));
         } else {
           return res(ctx.json(mockProducts));
         }
@@ -118,13 +118,13 @@ describe("useProductsApi", () => {
 
     // When
     const { result, waitForNextUpdate } = renderHook(() =>
-        useProductsApi("test", 1, 1)
+        useProductsApi("test", undefined, undefined, 1, 1)
     );
     await waitForNextUpdate();
 
     // Then
     expect(result.current.loading).toBe(false);
-    expect(result.current.products).toEqual([{ id: 3, name: "Product 3" }]);
+    expect(result.current.products).toEqual([mockProducts[0]]);
     expect(result.current.error).toBe("");
     expect(result.current.nextPage).toBe(1);
     expect(result.current.hasMore).toBe(true);
