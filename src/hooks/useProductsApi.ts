@@ -7,19 +7,30 @@ interface ProductState {
   products: Product[];
   error: string;
   loading: boolean;
+  nextPage: number;
+  hasMore: boolean;
+  loadMore: Function;
 }
 
-function useProductCollection(searchTerm?: string): ProductState {
+function useProductsApi(searchTerm?: string, page = 1, limit = 9): ProductState {
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
+  const [nextPage, setNextPage] = useState<number>(page);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+
+  useEffect(() => {
+    setProducts([]);
+    setNextPage(1);
+    setHasMore(true);
+  }, [searchTerm]);
 
   useEffect(() => {
     const fetchProducts = async (): Promise<void> => {
       try {
-        let url = `${API_HOST}/products`;
+        let url = `${API_HOST}/products?_page=${nextPage}&_limit=${limit}`;
         if (searchTerm) {
-          url += `?title_like=${searchTerm}`;
+          url += `&title_like=${searchTerm}`;
         }
 
         const response = await fetch(url);
@@ -27,8 +38,20 @@ function useProductCollection(searchTerm?: string): ProductState {
           throw new Error("Failed to fetch products");
         }
         const data = await response.json();
-        setProducts(data);
+        if (nextPage === 1) {
+          setProducts(data);
+        } else {
+          setProducts((prevProducts) => {
+            // Replace items from the current page
+            const updatedProducts = [...prevProducts];
+            const startIdx = (nextPage - 1) * limit;
+            const endIdx = startIdx + data.length;
+            updatedProducts.splice(startIdx, endIdx - startIdx, ...data);
+            return updatedProducts;
+          });
+        }
         setLoading(false);
+        setHasMore(data.length >= limit);
       } catch (error: any) {
         setError(error.message);
         setLoading(false);
@@ -36,9 +59,13 @@ function useProductCollection(searchTerm?: string): ProductState {
     };
 
     fetchProducts();
-  }, [searchTerm]);
+  }, [searchTerm, nextPage, limit]);
 
-  return { products, error, loading };
+  const loadMore = () => {
+    setNextPage((prevPage) => prevPage + 1);
+  };
+
+  return { products, error, loading, nextPage, hasMore, loadMore };
 }
 
-export default useProductCollection;
+export default useProductsApi;
