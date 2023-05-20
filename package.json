@@ -18,9 +18,18 @@
     "web-vitals": "^3.3.1"
   },
   "devDependencies": {
-    "concurrently": "^8.0.1"
+    "concurrently": "^8.0.1",
+    "eslint": "^8.23.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1"
+
   },
   "scripts": {
+    "lint": "eslint --cache \"./**/*.ts\"",
     "start:server": "json-server --watch data/products.json --port 3010",
     "start:app": "react-scripts start",
     "start": "concurrently \"npm run start:server\" \"npm run start:app\"",
