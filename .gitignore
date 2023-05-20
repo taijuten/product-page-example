@@ -7,6 +7,7 @@
 node_modules/
 dist/
 build/
+.eslintcache
 
 # Compiled Java class files
 *.class
