@@ -35,6 +35,7 @@ const ProductList: React.FC = () => {
           <ProductFilters />
         </Col>
         <Col xs={12} md={8} lg={9}>
+          {products.length === 0 && <div>No products found</div>}
           <Row>
             {products.map((product) => (
               <Col sm={12} lg={6} xl={4} key={`product_${product.id}`}>
