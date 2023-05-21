@@ -14,7 +14,8 @@ const ProductList: React.FC = () => {
   const { products, error, loading, hasMore, loadMore } = useProductsApi(
     queryParams.search as string,
     parseInt(queryParams.min as string),
-    parseInt(queryParams.max as string)
+    parseInt(queryParams.max as string),
+    queryParams.subscription === "true",
   );
 
   if (loading) {

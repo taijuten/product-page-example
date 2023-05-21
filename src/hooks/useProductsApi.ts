@@ -16,6 +16,7 @@ function useProductsApi(
   searchTerm?: string,
   min?: number,
   max?: number,
+  subscription?: boolean,
   page = 1,
   limit = 9
 ): ProductState {
@@ -29,7 +30,7 @@ function useProductsApi(
     setProducts([]);
     setNextPage(1);
     setHasMore(true);
-  }, [searchTerm, min, max]);
+  }, [searchTerm, min, max, subscription]);
 
   useEffect(() => {
     const fetchProducts = async (): Promise<void> => {
@@ -43,6 +44,9 @@ function useProductsApi(
         }
         if (max !== undefined) {
           url += `&price_lte=${max}`;
+        }
+        if (subscription) {
+          url += `&subscription=true`;
         }
 
         const response = await fetch(url);
@@ -71,7 +75,7 @@ function useProductsApi(
     };
 
     fetchProducts();
-  }, [searchTerm, nextPage, limit, min, max]);
+  }, [searchTerm, nextPage, limit, min, max, subscription]);
 
   const loadMore = () => {
     setNextPage((prevPage) => prevPage + 1);

@@ -71,7 +71,7 @@ describe("useProductsApi", () => {
     );
 
     // When
-    const { result, waitForNextUpdate } = renderHook(() => useProductsApi(undefined, undefined, undefined, 1, mockProducts.length));
+    const { result, waitForNextUpdate } = renderHook(() => useProductsApi(undefined, undefined, undefined, undefined, 1, mockProducts.length));
     await waitForNextUpdate();
 
     // Then
@@ -118,7 +118,7 @@ describe("useProductsApi", () => {
 
     // When
     const { result, waitForNextUpdate } = renderHook(() =>
-        useProductsApi("test", undefined, undefined, 1, 1)
+        useProductsApi("test", undefined, undefined, undefined, 1, 1)
     );
     await waitForNextUpdate();
 
@@ -129,6 +129,46 @@ describe("useProductsApi", () => {
     expect(result.current.nextPage).toBe(1);
     expect(result.current.hasMore).toBe(true);
   });
+
+  test("fetches and returns products based on min, max, and subscription", async () => {
+    // Given
+    const minPrice = 10;
+    const maxPrice = 30;
+    const subscription = true;
+  
+    server.use(
+      rest.get(`${process.env.REACT_APP_API_HOST}/products`, (req, res, ctx) => {
+        const params = req.url.searchParams;
+        const minParam = params.get("price_gte");
+        const maxParam = params.get("price_lte");
+        const subscriptionParam = params.get("subscription");
+  
+        if (
+          minParam === String(minPrice) &&
+          maxParam === String(maxPrice) &&
+          subscriptionParam === String(subscription)
+        ) {
+          return res(ctx.json(mockProducts));
+        } else {
+          return res(ctx.json([]));
+        }
+      })
+    );
+  
+    // When
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useProductsApi(undefined, minPrice, maxPrice, subscription, 1, 1)
+    );
+    await waitForNextUpdate();
+  
+    // Then
+    expect(result.current.loading).toBe(false);
+    expect(result.current.products).toEqual(mockProducts);
+    expect(result.current.error).toBe("");
+    expect(result.current.nextPage).toBe(1);
+    expect(result.current.hasMore).toBe(true);
+  });
+  
 
   test("loads more products", async () => {
     // Given
